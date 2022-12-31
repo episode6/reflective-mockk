@@ -57,7 +57,7 @@ class ConfigSite implements Plugin<Project> {
       }
 
       tasks.create("syncDocs") {
-        dependsOn("dokkaHtmlMultiModule", "configSite", "chopChangelog")
+        dependsOn("dokkaHtml", "configSite", "chopChangelog")
       }
     }
   }
