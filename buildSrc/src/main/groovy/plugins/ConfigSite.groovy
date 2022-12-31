@@ -26,7 +26,7 @@ class ConfigSite implements Plugin<Project> {
         doLast { file(siteDir).mkdirs() }
       }
 
-      tasks.dokkaHtmlMultiModule {
+      tasks.dokkaHtml {
         outputDirectory.set(file(dokkaDir))
       }
 
