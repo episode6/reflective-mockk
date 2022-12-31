@@ -1,8 +1,8 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:com.episode6.gradlenow.kmpinclusivedeploy////PointingToDeclaration/reflective-mockk/com.episode6.gradlenow.kmpinclusivedeploy/index.html
-$dokka.location:com.episode6.gradlenow.kmpinclusivedeploy/SampleClass///PointingToDeclaration/reflective-mockk/com.episode6.gradlenow.kmpinclusivedeploy/-sample-class/index.html
-$dokka.location:com.episode6.gradlenow.kmpinclusivedeploy/SampleClass/SampleClass/#/PointingToDeclaration/reflective-mockk/com.episode6.gradlenow.kmpinclusivedeploy/-sample-class/-sample-class.html
-$dokka.location:com.episode6.gradlenow.kmpinclusivedeploy/SampleClass/hello/#/PointingToDeclaration/reflective-mockk/com.episode6.gradlenow.kmpinclusivedeploy/-sample-class/hello.html
-com.episode6.gradlenow.kmpinclusivedeploy
+$dokka.location:com.episode6.reflectivemockk////PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/index.html
+$dokka.location:com.episode6.reflectivemockk/SampleClass///PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/-sample-class/index.html
+$dokka.location:com.episode6.reflectivemockk/SampleClass/SampleClass/#/PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/-sample-class/-sample-class.html
+$dokka.location:com.episode6.reflectivemockk/SampleClass/hello/#/PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/-sample-class/hello.html
+com.episode6.reflectivemockk
 
