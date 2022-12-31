@@ -25,24 +25,26 @@ class CommonDeployable implements Plugin<Project> {
         from tasks.dokkaHtml
       }
 
-      if (Config.Maven.isReleaseBuild(target)) {
-        signing {
-          def signingKey = findProperty("signingKey")
-          def signingPassword = findProperty("signingPassword")
-          if (signingKey != null && signingPassword != null) {
-            useInMemoryPgpKeys(signingKey, signingPassword)
+      afterEvaluate { project ->
+        if (Config.Maven.isReleaseBuild(project)) {
+          signing {
+            def signingKey = findProperty("signingKey")
+            def signingPassword = findProperty("signingPassword")
+            if (signingKey != null && signingPassword != null) {
+              useInMemoryPgpKeys(signingKey, signingPassword)
+            }
+            sign publishing.publications
           }
-          sign publishing.publications
         }
-      }
 
-      publishing {
-        repositories {
-          maven {
-            url Config.Maven.getRepoUrl(target)
-            credentials {
-              username findProperty("nexusUsername")
-              password findProperty("nexusPassword")
+        publishing {
+          repositories {
+            maven {
+              url Config.Maven.getRepoUrl(project)
+              credentials {
+                username findProperty("nexusUsername")
+                password findProperty("nexusPassword")
+              }
             }
           }
         }

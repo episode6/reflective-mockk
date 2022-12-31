@@ -23,10 +23,12 @@ class ConfigKmpDeployable implements Plugin<Project> {
         }
       }
 
-      publishing {
-        publications.withType(MavenPublication) {
-          Config.Maven.applyPomConfig(target, pom)
-          artifact javadocJar
+      afterEvaluate { project ->
+        publishing {
+          publications.withType(MavenPublication) {
+            Config.Maven.applyPomConfig(project, pom)
+            artifact javadocJar
+          }
         }
       }
     }

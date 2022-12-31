@@ -53,7 +53,7 @@ class Config {
         title: ${project.name}
         description: ${project.rootProject.description}
         version: ${project.version}
-        docsDir: https://episode6.github.io/reflective-mockk/docs/${ if (Maven.isReleaseBuild(project)) "v${project.version}" else "main" }
+        docsDir: https://episode6.github.io/reflective-mockk/docs/${if (Maven.isReleaseBuild(project)) "v${project.version}" else "main"}
         kotlinVersion: ${project.libs.versions.kotlin.get()}
 """.stripIndent()
     }
@@ -61,9 +61,10 @@ class Config {
 
   class Maven {
     static String projectGHUrl = "episode6/reflective-mockk"
+
     static void applyPomConfig(Project project, MavenPom pom) {
       pom.with {
-        name = project.rootProject.name + "-" + project.name
+        name = project.project.name
         url = "https://github.com/${projectGHUrl}"
         licenses {
           license {
