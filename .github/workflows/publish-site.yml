@@ -9,7 +9,7 @@ env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 jobs:
   publish-site-job:
-    if: ${{ github.repository == 'episode6/gradle-now' }}
+    if: ${{ github.repository == 'episode6/reflective-mockk' }}
     runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
