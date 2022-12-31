@@ -1,4 +1,4 @@
-package com.episode6.gradlenow.kmpinclusivedeploy
+package com.episode6.reflectivemockk
 
 /**
  * This is a sample class
