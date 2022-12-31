@@ -5,10 +5,10 @@ plugins {
   id("config-kmp-deploy")
 }
 
-description = "Project description goes here"
+description = "Stub mockks programmatically using kotlin-reflect."
 version = self.versions.name.get()
 allprojects {
-  group = "com.episode6.gradlenow"
+  group = "com.episode6.reflectivemock"
   version = rootProject.version
 }
 
