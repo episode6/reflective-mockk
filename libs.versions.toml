@@ -1,0 +1,15 @@
+[versions]
+assertk = "0.25"
+gradle = "7.5.1"
+kotlin = "1.7.10"
+mockk = "1.13.3"
+
+[libraries]
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+junit5 = "org.junit.jupiter:junit-jupiter:5.9.1"
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+
+[plugins]
+dokka = "org.jetbrains.dokka:1.7.10"
+kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+

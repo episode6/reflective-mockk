@@ -1,0 +1,15 @@
+#!/bin/bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+SCRIPT_NAME="$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")"
+if [ ! -f "$SCRIPT_DIR/$SCRIPT_NAME" ]; then
+    SCRIPT_DIR=${0:a:h}
+fi
+
+cd $SCRIPT_DIR
+./gradlew configSite
+
+cp build/site/_config.yml docs/
+
+cd $SCRIPT_DIR/docs
+bundle exec jekyll serve

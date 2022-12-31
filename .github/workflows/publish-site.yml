@@ -1,0 +1,52 @@
+name: Publish Site
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+jobs:
+  publish-site-job:
+    if: ${{ github.repository == 'episode6/gradle-now' }}
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Sync docs
+        run: ./gradlew syncDocs
+
+      - name: Deploy root docs to website
+        if: ${{ github.ref_type == 'tag' }}
+        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: site
+          FOLDER: build/site
+          TARGET_FOLDER: /
+          CLEAN: false
+
+      - name: Deploy dokka to website
+        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: site
+          FOLDER: build/dokka/html
+          TARGET_FOLDER: /docs/${{ github.ref_name }}/
+          CLEAN: true
+
+      - name: Publish release to github
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
+        if: ${{ github.ref_type == 'tag' }}
+        with:
+          body_path: build/VERSION_CHANGELOG.md
+          append_body: true
+          files: |
+            LICENSE
