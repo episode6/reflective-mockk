@@ -10,8 +10,8 @@ import kotlin.test.Test
 
 class TheHackTest {
 
-  class TestClass {
-    fun withHiFive(input: String): String = "HiFive:$input"
+  interface TestInterface {
+    fun withHiFive(input: String): String
   }
 
   @Test fun testFindRecorderWorks() {
@@ -25,7 +25,7 @@ class TheHackTest {
   }
 
   @Test fun testManualUseOfAny() {
-    val mockTestClass = mockk<TestClass> {
+    val mockTestClass = mockk<TestInterface> {
       every { withHiFive(any(String::class)) } returns "mocked"
     }
 
