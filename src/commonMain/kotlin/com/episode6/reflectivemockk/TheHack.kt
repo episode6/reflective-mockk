@@ -17,7 +17,8 @@ public fun <T : Any> MockKMatcherScope.any(kclass: KClass<T>): T =
 private fun <T : Any> MockKMatcherScope.match(matcher: Matcher<T>, kclass: KClass<T>): T =
   findCallRecorder().matcher(matcher, kclass)
 
-private fun MockKMatcherScope.findCallRecorder(): MockKGateway.CallRecorder {
+// @VisibleForTests
+internal fun MockKMatcherScope.findCallRecorder(): MockKGateway.CallRecorder {
   val func = MockKMatcherScope::class.memberProperties
     .find { it.returnType.classifier == MockKGateway.CallRecorder::class }
   return func!!.call(this) as MockKGateway.CallRecorder
