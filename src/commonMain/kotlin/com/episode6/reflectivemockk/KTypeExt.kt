@@ -11,22 +11,28 @@ import kotlin.reflect.full.createType
  */
 internal fun KType.resolveType(referencedType: KType): KType =
   when (val referencedClassifier = referencedType.classifier) {
-    is KTypeParameter -> resolveTypeParamNamed(referencedClassifier.name)
+    is KTypeParameter -> resolveTypeParam(referencedClassifier)
     is KClass<*>      -> referencedClassifier.createType(
       arguments = referencedType.arguments.map { resolveTypeProjection(it) },
       nullable = referencedType.isMarkedNullable
     )
+
     else              -> throw TypeTokenResolutionError(referencedType = referencedType, context = this)
   }
 
 private fun KType.resolveTypeProjection(referencedType: KTypeProjection): KTypeProjection =
   when (val referencedClassifier = referencedType.type?.classifier) {
-    is KTypeParameter -> referencedType.copy(type = resolveTypeParamNamed(referencedClassifier.name))
+    is KTypeParameter -> referencedType.copy(type = resolveTypeParam(referencedClassifier))
     else              -> referencedType
   }
 
-private fun KType.resolveTypeParamNamed(name: String): KType =
-  arguments[indexOfTypeParamNamed(name)].type!!
+private fun KType.resolveTypeParam(param: KTypeParameter): KType {
+  val index = indexOfTypeParamNamed(param.name)
+  return when {
+    index < 0 -> param.upperBounds[0] // kind of a hack, wont work with complex generics
+    else      -> arguments[index].type!!
+  }
+}
 
 private fun KType.indexOfTypeParamNamed(name: String): Int =
   (classifier as KClass<*>).typeParameters.indexOfFirst { it.name == name }

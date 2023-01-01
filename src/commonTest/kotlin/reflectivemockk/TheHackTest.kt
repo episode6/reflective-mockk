@@ -21,6 +21,10 @@ class TheHackTest {
     fun someFunction(input: T): T
   }
 
+  interface TestInterfaceWithGenericFunction {
+    fun <T> someFunction(input: T): T
+  }
+
   @Test fun testFindRecorderWorks() {
     val callRecorder = mockk<MockKGateway.CallRecorder>()
     val lambda = CapturingSlot<Function<*>>()
@@ -41,8 +45,18 @@ class TheHackTest {
     assertThat(result).isEqualTo("mocked")
   }
 
-  @Test fun testManualUseOfAnyOnGeneric() {
+  @Test fun testManualUseOfAnyOnGenericObject() {
     val mockTestClass = mockk<TestGenericInterface<String>> {
+      every { someFunction(any(String::class)) } returns "mocked"
+    }
+
+    val result = mockTestClass.someFunction("some input")
+
+    assertThat(result).isEqualTo("mocked")
+  }
+
+  @Test fun testManualUseOfAnyOnGenericFunction() {
+    val mockTestClass = mockk<TestInterfaceWithGenericFunction> {
       every { someFunction(any(String::class)) } returns "mocked"
     }
 
@@ -73,6 +87,19 @@ class TheHackTest {
     every {
       func.call(mockTestClass, any(paramType.classifier as KClass<Any>))
     } answers { "mocked" }
+
+    val result = mockTestClass.someFunction("some input")
+
+    assertThat(result).isEqualTo("mocked")
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test fun testManualReflectiveAnyOnGenericFunction() {
+    val mockTestClass = mockk<TestInterfaceWithGenericFunction>()
+    val typeOf = typeOf<TestInterfaceWithGenericFunction>()
+    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val paramType = typeOf.resolveType(func.parameters[1].type)
+    every { func.call(mockTestClass, any(paramType.classifier as KClass<Any>)) } answers { "mocked" }
 
     val result = mockTestClass.someFunction("some input")
 
