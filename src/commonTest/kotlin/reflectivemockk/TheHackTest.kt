@@ -5,13 +5,20 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.episode6.reflectivemockk.any
 import com.episode6.reflectivemockk.findCallRecorder
+import com.episode6.reflectivemockk.resolveType
 import io.mockk.*
+import kotlin.reflect.*
+import kotlin.reflect.full.memberFunctions
 import kotlin.test.Test
 
 class TheHackTest {
 
   interface TestInterface {
-    fun withHiFive(input: String): String
+    fun someFunction(input: String): String
+  }
+
+  interface TestGenericInterface<T> {
+    fun someFunction(input: T): T
   }
 
   @Test fun testFindRecorderWorks() {
@@ -24,12 +31,50 @@ class TheHackTest {
     assertThat(result).isNotNull().isEqualTo(callRecorder)
   }
 
-  @Test fun testManualUseOfAny() {
+  @Test fun testManualUseOfAnyOnSimpleInterface() {
     val mockTestClass = mockk<TestInterface> {
-      every { withHiFive(any(String::class)) } returns "mocked"
+      every { someFunction(any(String::class)) } returns "mocked"
     }
 
-    val result = mockTestClass.withHiFive("some input")
+    val result = mockTestClass.someFunction("some input")
+
+    assertThat(result).isEqualTo("mocked")
+  }
+
+  @Test fun testManualUseOfAnyOnGeneric() {
+    val mockTestClass = mockk<TestGenericInterface<String>> {
+      every { someFunction(any(String::class)) } returns "mocked"
+    }
+
+    val result = mockTestClass.someFunction("some input")
+
+    assertThat(result).isEqualTo("mocked")
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test fun testManualReflectiveAnyOnSimpleInterface() {
+    val mockTestClass = mockk<TestInterface>()
+    val typeOf = typeOf<TestInterface>()
+    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val paramType = typeOf.resolveType(func.parameters[1].type)
+    every { func.call(mockTestClass, any(paramType.classifier as KClass<Any>)) } answers { "mocked" }
+
+    val result = mockTestClass.someFunction("some input")
+
+    assertThat(result).isEqualTo("mocked")
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  @Test fun testManualReflectiveAnyOnGenericInterface() {
+    val mockTestClass = mockk<TestGenericInterface<String>>()
+    val testClassType = typeOf<TestGenericInterface<String>>()
+    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val paramType = testClassType.resolveType(func.parameters[1].type)
+    every {
+      func.call(mockTestClass, any(paramType.classifier as KClass<Any>))
+    } answers { "mocked" }
+
+    val result = mockTestClass.someFunction("some input")
 
     assertThat(result).isEqualTo("mocked")
   }
