@@ -11,12 +11,12 @@ internal fun MockKMatcherScope.reflectiveAny(receiverType: KType, rawParamType: 
   return any(paramType.classifier as KClass<*>)
 }
 
-public fun MockKMatcherScope.callTo(receiver: Any, receiverType: KType, callable: KCallable<*>): Any? {
+public fun MockKMatcherScope.callTo(callable: KCallable<*>, receiver: Any, receiverType: KType): Any? {
   val params = callable.parameters.drop(1) // first param is always receiver
     .map { reflectiveAny(receiverType = receiverType, rawParamType = it.type) }
   val allParams: List<Any> = listOf(receiver) + params
   return callable.call(*allParams.toTypedArray())
 }
 
-public inline fun <reified RECEIVER : Any> MockKMatcherScope.callTo(receiver: RECEIVER, callable: KCallable<*>): Any? =
-  callTo(receiver, typeOf<RECEIVER>(), callable)
+public inline fun <reified RECEIVER : Any> MockKMatcherScope.callTo(callable: KCallable<*>, receiver: RECEIVER): Any? =
+  callTo(callable = callable, receiver = receiver, receiverType = typeOf<RECEIVER>())
