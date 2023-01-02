@@ -1,12 +1,8 @@
-package reflectivemockk
+package com.episode6.reflectivemockk
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import com.episode6.reflectivemockk.any
-import com.episode6.reflectivemockk.findCallRecorder
-import com.episode6.reflectivemockk.kotlinClass
-import com.episode6.reflectivemockk.resolveInnerType
 import io.mockk.*
 import kotlin.reflect.*
 import kotlin.reflect.full.memberFunctions
