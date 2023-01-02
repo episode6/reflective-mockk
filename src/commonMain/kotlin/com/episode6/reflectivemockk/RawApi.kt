@@ -47,7 +47,7 @@ public fun MockKMatcherScope.callTo(callable: KCallable<*>, receiver: Any, recei
  *
  * val mock = mockk<SomeClass>()
  * mock.javaClass.kotlin.memberFunctions.forEach {
- *   every { callTo(it, receiver = mock) } answers { /* some default answer */ }
+ *   coEvery { suspendCallTo(it, receiver = mock) } answers { /* some default answer */ }
  * }
  *
  * Note: [receiver] must be a mockk
@@ -63,7 +63,7 @@ public suspend inline fun <reified RECEIVER : Any> MockKMatcherScope.suspendCall
  * val mock = mockk<SomeClass>()
  * val mockType = typeOf<SomeClass>()
  * mock.javaClass.kotlin.memberFunctions.forEach {
- *   every { callTo(it, receiver = mock, receiverType = mockType) } answers { /* some default answer */ }
+ *   coEvery { suspendCallTo(it, receiver = mock, receiverType = mockType) } answers { /* some default answer */ }
  * }
  *
  * Note: [receiver] must be a mockk
