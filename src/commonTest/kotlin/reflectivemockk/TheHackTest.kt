@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.episode6.reflectivemockk.any
 import com.episode6.reflectivemockk.findCallRecorder
+import com.episode6.reflectivemockk.kotlinClass
 import com.episode6.reflectivemockk.resolveInnerType
 import io.mockk.*
 import kotlin.reflect.*
@@ -69,7 +70,7 @@ class TheHackTest {
   @Test fun testManualReflectiveAnyOnSimpleInterface() {
     val mockTestClass = mockk<TestInterface>()
     val typeOf = typeOf<TestInterface>()
-    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val func = mockTestClass.kotlinClass.memberFunctions.find { it.name == "someFunction" }!!
     val paramType = typeOf.resolveInnerType(func.parameters[1].type)
     every { func.call(mockTestClass, any(paramType.classifier as KClass<Any>)) } answers { "mocked" }
 
@@ -82,7 +83,7 @@ class TheHackTest {
   @Test fun testManualReflectiveAnyOnGenericInterface() {
     val mockTestClass = mockk<TestGenericInterface<String>>()
     val testClassType = typeOf<TestGenericInterface<String>>()
-    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val func = mockTestClass.kotlinClass.memberFunctions.find { it.name == "someFunction" }!!
     val paramType = testClassType.resolveInnerType(func.parameters[1].type)
     every {
       func.call(mockTestClass, any(paramType.classifier as KClass<Any>))
@@ -97,7 +98,7 @@ class TheHackTest {
   @Test fun testManualReflectiveAnyOnGenericFunction() {
     val mockTestClass = mockk<TestInterfaceWithGenericFunction>()
     val typeOf = typeOf<TestInterfaceWithGenericFunction>()
-    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val func = mockTestClass.kotlinClass.memberFunctions.find { it.name == "someFunction" }!!
     val paramType = typeOf.resolveInnerType(func.parameters[1].type)
     every { func.call(mockTestClass, any(paramType.classifier as KClass<Any>)) } answers { "mocked" }
 
