@@ -3,6 +3,7 @@ package reflectivemockk
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.episode6.reflectivemockk.callTo
+import com.episode6.reflectivemockk.kotlinClass
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,7 +25,7 @@ class RawApiTest {
 
   @Test fun testUsageWithSimpleInterface() {
     val mockTestClass = mockk<TestInterface>()
-    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val func = mockTestClass.kotlinClass.memberFunctions.find { it.name == "someFunction" }!!
     every { callTo(func, receiver = mockTestClass) } returns "mocked"
 
     val result = mockTestClass.someFunction("something")
@@ -35,7 +36,7 @@ class RawApiTest {
 
   @Test fun testUsageWithGenericInterface() {
     val mockTestClass = mockk<TestGenericInterface<String>>()
-    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val func = mockTestClass.kotlinClass.memberFunctions.find { it.name == "someFunction" }!!
     every { callTo(func, receiver = mockTestClass) } returns "mocked"
 
     val result = mockTestClass.someFunction("something")
@@ -46,7 +47,7 @@ class RawApiTest {
 
   @Test fun testUsageWithGenericFunction() {
     val mockTestClass = mockk<TestInterfaceWithGenericFunction>()
-    val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
+    val func = mockTestClass.kotlinClass.memberFunctions.find { it.name == "someFunction" }!!
     every { callTo(func, receiver = mockTestClass) } returns "mocked"
 
     val result = mockTestClass.someFunction("something")
