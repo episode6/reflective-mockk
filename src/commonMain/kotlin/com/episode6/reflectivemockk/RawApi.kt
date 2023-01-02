@@ -7,11 +7,6 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.callSuspend
 import kotlin.reflect.typeOf
 
-internal fun MockKMatcherScope.reflectiveAny(receiverType: KType, rawParamType: KType): Any {
-  val paramType = receiverType.resolveInnerType(rawParamType)
-  return any(paramType.classifier as KClass<*>)
-}
-
 /**
  * Allows for reflection-based stubbing of methods.
  *
@@ -41,9 +36,7 @@ public inline fun <reified RECEIVER : Any> MockKMatcherScope.callTo(callable: KC
  * Note: [receiver] must be a mockk
  */
 public fun MockKMatcherScope.callTo(callable: KCallable<*>, receiver: Any, receiverType: KType): Any? {
-  val params = callable.parameters.drop(1) // first param is always receiver
-    .map { reflectiveAny(receiverType = receiverType, rawParamType = it.type) }
-  val allParams: List<Any> = listOf(receiver) + params
+  val allParams: List<Any> = listOf(receiver) + paramMatchersFor(callable, receiverType)
   return callable.call(*allParams.toTypedArray())
 }
 
@@ -76,8 +69,15 @@ public suspend inline fun <reified RECEIVER : Any> MockKMatcherScope.suspendCall
  * Note: [receiver] must be a mockk
  */
 public suspend fun MockKMatcherScope.suspendCallTo(callable: KCallable<*>, receiver: Any, receiverType: KType): Any? {
-  val params = callable.parameters.drop(1) // first param is always receiver
-    .map { reflectiveAny(receiverType = receiverType, rawParamType = it.type) }
-  val allParams: List<Any> = listOf(receiver) + params
+  val allParams: List<Any> = listOf(receiver) + paramMatchersFor(callable, receiverType)
   return callable.callSuspend(*allParams.toTypedArray())
 }
+
+private fun MockKMatcherScope.reflectiveAny(receiverType: KType, rawParamType: KType): Any {
+  val paramType = receiverType.resolveInnerType(rawParamType)
+  return any(paramType.classifier as KClass<*>)
+}
+
+private fun MockKMatcherScope.paramMatchersFor(callable: KCallable<*>, receiverType: KType) =
+  callable.parameters.drop(1) // first param is always receiver
+    .map { reflectiveAny(receiverType = receiverType, rawParamType = it.type) }
