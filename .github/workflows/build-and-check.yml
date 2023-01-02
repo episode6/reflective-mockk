@@ -19,27 +19,8 @@ jobs:
         distribution: 'adopt'
         cache: gradle
 
-    - name: Decode keystore
-      env:
-        ENCODED_STRING: ${{ secrets.ANDROID_SIGNING_KEY }}
-      run: |
-        echo $ENCODED_STRING | base64 -d > keystore.jks
-
     - name: Assemble project
       run: ./gradlew assemble
-      env:
-        ORG_GRADLE_PROJECT_androidSigningKeyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
-
-    - name: Cleanup keystore
-      if: ${{ always() }}
-      run: rm -f keystore.jks
-
-    - name: Upload android app build output
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-outputs
-        path: android-app/build/outputs/
-        retention-days: 7
 
     - name: Check project
       run: ./gradlew check
