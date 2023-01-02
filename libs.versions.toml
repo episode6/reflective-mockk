@@ -3,11 +3,13 @@ assertk = "0.25"
 gradle = "7.5.1"
 kotlin = "1.7.10"
 mockk = "1.13.3"
+kotlinx-coroutines = "1.6.4"
 
 [libraries]
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 junit5 = "org.junit.jupiter:junit-jupiter:5.9.1"
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 dokka = "org.jetbrains.dokka:1.7.10"
