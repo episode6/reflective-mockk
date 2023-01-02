@@ -2,6 +2,8 @@ $dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:com.episode6.reflectivemockk////PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/index.html
 $dokka.location:com.episode6.reflectivemockk//any/[Error type: Unresolved type for MockKMatcherScope]#kotlin.reflect.KClass[TypeParam(bounds=[kotlin.Any])]/PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/any.html
+$dokka.location:com.episode6.reflectivemockk//callTo/[Error type: Unresolved type for MockKMatcherScope]#kotlin.reflect.KCallable[*]#TypeParam(bounds=[kotlin.Any])/PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/call-to.html
+$dokka.location:com.episode6.reflectivemockk//callTo/[Error type: Unresolved type for MockKMatcherScope]#kotlin.reflect.KCallable[*]#kotlin.Any#kotlin.reflect.KType/PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/call-to.html
 $dokka.location:com.episode6.reflectivemockk/TypeTokenResolutionError///PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/-type-token-resolution-error/index.html
 $dokka.location:com.episode6.reflectivemockk/TypeTokenResolutionError/TypeTokenResolutionError/#kotlin.reflect.KType#kotlin.reflect.KType/PointingToDeclaration/reflective-mockk/com.episode6.reflectivemockk/-type-token-resolution-error/-type-token-resolution-error.html
 com.episode6.reflectivemockk
