@@ -73,11 +73,6 @@ public suspend fun MockKMatcherScope.suspendCallTo(callable: KCallable<*>, recei
   return callable.callSuspend(*allParams.toTypedArray())
 }
 
-private fun MockKMatcherScope.reflectiveAny(receiverType: KType, rawParamType: KType): Any {
-  val paramType = receiverType.resolveInnerType(rawParamType)
-  return any(paramType.classifier as KClass<*>)
-}
-
-private fun MockKMatcherScope.paramMatchersFor(callable: KCallable<*>, receiverType: KType) =
+private fun MockKMatcherScope.paramMatchersFor(callable: KCallable<*>, receiverType: KType): List<Any> =
   callable.parameters.drop(1) // first param is always receiver
-    .map { reflectiveAny(receiverType = receiverType, rawParamType = it.type) }
+    .map { any(receiverType.resolveInnerType(it.type).classifier as KClass<*>) }
