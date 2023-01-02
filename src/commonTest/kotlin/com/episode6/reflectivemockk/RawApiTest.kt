@@ -1,9 +1,7 @@
-package reflectivemockk
+package com.episode6.reflectivemockk
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.episode6.reflectivemockk.callTo
-import com.episode6.reflectivemockk.kotlinClass
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
