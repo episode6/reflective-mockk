@@ -9,7 +9,7 @@ import kotlin.reflect.full.createType
 /**
  * Resolve a type that is referenced in the @receiver
  */
-internal fun KType.resolveType(referencedType: KType): KType =
+internal fun KType.resolveInnerType(referencedType: KType): KType =
   when (val referencedClassifier = referencedType.classifier) {
     is KTypeParameter -> resolveTypeParam(referencedClassifier)
     is KClass<*>      -> referencedClassifier.createType(

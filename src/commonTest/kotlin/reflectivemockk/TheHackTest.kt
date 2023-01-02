@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.episode6.reflectivemockk.any
 import com.episode6.reflectivemockk.findCallRecorder
-import com.episode6.reflectivemockk.resolveType
+import com.episode6.reflectivemockk.resolveInnerType
 import io.mockk.*
 import kotlin.reflect.*
 import kotlin.reflect.full.memberFunctions
@@ -70,7 +70,7 @@ class TheHackTest {
     val mockTestClass = mockk<TestInterface>()
     val typeOf = typeOf<TestInterface>()
     val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
-    val paramType = typeOf.resolveType(func.parameters[1].type)
+    val paramType = typeOf.resolveInnerType(func.parameters[1].type)
     every { func.call(mockTestClass, any(paramType.classifier as KClass<Any>)) } answers { "mocked" }
 
     val result = mockTestClass.someFunction("some input")
@@ -83,7 +83,7 @@ class TheHackTest {
     val mockTestClass = mockk<TestGenericInterface<String>>()
     val testClassType = typeOf<TestGenericInterface<String>>()
     val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
-    val paramType = testClassType.resolveType(func.parameters[1].type)
+    val paramType = testClassType.resolveInnerType(func.parameters[1].type)
     every {
       func.call(mockTestClass, any(paramType.classifier as KClass<Any>))
     } answers { "mocked" }
@@ -98,7 +98,7 @@ class TheHackTest {
     val mockTestClass = mockk<TestInterfaceWithGenericFunction>()
     val typeOf = typeOf<TestInterfaceWithGenericFunction>()
     val func = mockTestClass.javaClass.kotlin.memberFunctions.find { it.name == "someFunction" }!!
-    val paramType = typeOf.resolveType(func.parameters[1].type)
+    val paramType = typeOf.resolveInnerType(func.parameters[1].type)
     every { func.call(mockTestClass, any(paramType.classifier as KClass<Any>)) } answers { "mocked" }
 
     val result = mockTestClass.someFunction("some input")
