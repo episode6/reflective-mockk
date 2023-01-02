@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.reflect.full.memberFunctions
 
 class RawApiTest {
