@@ -22,9 +22,9 @@ kotlin {
         api(kotlin("reflect"))
       }
     }
-    val jvmTest by getting {
+    val commonTest by getting {
       dependencies {
-        implementation(libs.junit5)
+        implementation(kotlin("test"))
         implementation(libs.assertk)
       }
     }
