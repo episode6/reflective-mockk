@@ -36,4 +36,20 @@ class BuilderTest {
       builder.step3()
     }
   }
+
+  @Test fun testSimpleBuilder3() {
+    val builder = reflectiveMockk<TestBuilder> {
+      normalMemberFunctions
+        .filter { it.returnType.classifier == TestBuilder::class }
+        .forEach { everyCallTo(it) returns mock }
+    }
+
+    builder.step1().step2().step3()
+
+    verify {
+      builder.step1()
+      builder.step2()
+      builder.step3()
+    }
+  }
 }

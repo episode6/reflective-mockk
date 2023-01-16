@@ -41,4 +41,20 @@ class SuspendBuilderTest {
       builder.step3()
     }
   }
+
+  @Test fun testSimpleBuilder3() = runTest {
+    val builder = reflectiveMockk<TestBuilder> {
+      suspendMemberFunctions
+        .filter { it.returnType.classifier == TestBuilder::class }
+        .forEach { coEveryCallTo(it) returns mock }
+    }
+
+    builder.step1().step2().step3()
+
+    coVerify {
+      builder.step1()
+      builder.step2()
+      builder.step3()
+    }
+  }
 }
