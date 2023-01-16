@@ -5,27 +5,48 @@ import kotlin.reflect.*
 import kotlin.reflect.full.memberFunctions
 import kotlin.reflect.full.memberProperties
 
-public inline fun <reified T : Any> T.reflectiveStubs(stubbing: ReflectiveStubbing<T>.() -> Unit) {
+public inline fun <reified T : Any> T.reflectiveStubs(stubbing: ReflectiveStubbing<T>.() -> Unit): T = apply {
   ReflectiveStubbing<T>(this, typeOf<T>()).stubbing()
 }
 
-public inline fun <reified T : Any> reflectiveMockk(stubbing: ReflectiveStubbing<T>.() -> Unit): T =
-  mockk<T>().apply { reflectiveStubs(stubbing) }
+public inline fun <reified T : Any> reflectiveMockk(
+  name: String? = null,
+  relaxed: Boolean = false,
+  vararg moreInterfaces: KClass<*>,
+  relaxUnitFun: Boolean = false,
+  stubbing: ReflectiveStubbing<T>.() -> Unit
+): T = mockk<T>(
+  name = name,
+  relaxed = relaxed,
+  moreInterfaces = moreInterfaces,
+  relaxUnitFun = relaxUnitFun,
+).apply { reflectiveStubs(stubbing) }
 
 public class ReflectiveStubbing<T : Any>(public val mock: T, private val ktype: KType) {
-  public val kclass: KClass<*> get() = mock.kotlinClass
-  public val functions: Collection<KFunction<*>> get() = kclass.memberFunctions.filter { !it.isSuspend }
-  public val suspendFunctions: Collection<KFunction<*>> get() = kclass.memberFunctions.filter { it.isSuspend }
-  public val properties: Collection<KProperty1<*, *>> get() = kclass.memberProperties
+
+  public val kClass: KClass<*> get() = mock.kotlinClass
+  public val memberProperties: Collection<KProperty1<*, *>> get() = kClass.memberProperties
+  public val memberFunctions: Collection<KFunction<*>> get() = kClass.memberFunctions
+  public val normalMemberFunctions: Collection<KFunction<*>> get() = memberFunctions.filter { !it.isSuspend }
+  public val suspendMemberFunctions: Collection<KFunction<*>> get() = memberFunctions.filter { it.isSuspend }
 
   public fun everyCallTo(callable: KCallable<*>): MockKStubScope<Any?, Any?> = every { callTo(callable, mock, ktype) }
-  public fun coEveryCallTo(callable: KCallable<*>): MockKStubScope<Any?, Any?> = coEvery { callTo(callable, mock, ktype) }
+  public fun coEveryCallTo(callable: KCallable<*>): MockKStubScope<Any?, Any?> =
+    coEvery { suspendCallTo(callable, mock, ktype) }
 
-  @Suppress("UNCHECKED_CAST")
-  public fun defaultAnswer(answer: MockKAnswerScope<T, Any?>.(Call) -> T) {
-    (functions + properties).forEach { everyCallTo(it) answers(answer as AnyAnswer<T>) }
-    suspendFunctions.forEach { coEveryCallTo(it) answers(answer as AnyAnswer<T>) }
+  public fun answerEveryCallIn(calls: Collection<KCallable<*>>, answer: AnyAnswer) {
+    calls.forEach { everyCallTo(it) answers (answer) }
+  }
+
+  public fun coAnswerEveryCallIn(calls: Collection<KCallable<*>>, answer: CoAnyAnswer) {
+    calls.forEach { coEveryCallTo(it) coAnswers (answer) }
+  }
+
+  public fun defaultAnswer(answer: AnyAnswer) {
+    answerEveryCallIn(calls = memberProperties + normalMemberFunctions, answer)
+    coAnswerEveryCallIn(calls = suspendMemberFunctions, answer)
   }
 }
 
-private typealias AnyAnswer<T> = MockKAnswerScope<Any?, Any?>.(Call) -> T
+public typealias AnyAnswer = MockKAnswerScope<Any?, Any?>.(Call) -> Any?
+public typealias CoAnyAnswer = suspend MockKAnswerScope<Any?, Any?>.(Call) -> Any?
