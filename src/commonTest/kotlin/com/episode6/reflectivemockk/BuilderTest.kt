@@ -40,7 +40,7 @@ class BuilderTest {
   @Test fun testSimpleBuilder3() {
     val builder = reflectiveMockk<TestBuilder> {
       normalMemberFunctions
-        .filter { it.returnType.classifier == TestBuilder::class }
+        .filterReturnType<TestBuilder>()
         .forEach { everyCallTo(it) returns mock }
     }
 

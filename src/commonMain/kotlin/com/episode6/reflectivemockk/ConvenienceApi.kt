@@ -30,6 +30,9 @@ public class ReflectiveStubbing<T : Any>(public val mock: T, private val ktype: 
   public val normalMemberFunctions: Collection<KFunction<*>> get() = memberFunctions.filter { !it.isSuspend }
   public val suspendMemberFunctions: Collection<KFunction<*>> get() = memberFunctions.filter { it.isSuspend }
 
+  public inline fun <reified R : Any?> Collection<KCallable<*>>.filterReturnType(): Collection<KCallable<*>> =
+    filter { it.returnType.classifier == R::class }
+
   public fun everyCallTo(callable: KCallable<*>): MockKStubScope<Any?, Any?> = every { callTo(callable, mock, ktype) }
   public fun coEveryCallTo(callable: KCallable<*>): MockKStubScope<Any?, Any?> =
     coEvery { suspendCallTo(callable, mock, ktype) }
