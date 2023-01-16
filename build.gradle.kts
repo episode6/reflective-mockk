@@ -7,7 +7,7 @@ plugins {
 
 description = "Stub mockks programmatically using kotlin-reflect."
 version = self.versions.name.get()
-group = "com.episode6.reflectivemock"
+group = "com.episode6.reflectivemockk"
 
 tasks.wrapper {
   gradleVersion = libs.versions.gradle.get()
