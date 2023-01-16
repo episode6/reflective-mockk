@@ -3,7 +3,6 @@
 package com.episode6.reflectivemockk
 
 import io.mockk.coVerify
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -17,7 +16,7 @@ class SuspendBuilderTest {
   }
 
   @Test fun testSimpleBuilder() = runTest {
-    val builder = reflectiveMockk<TestBuilder> { defaultAnswer { mock } }
+    val builder = reflectiveMockk<TestBuilder> { defaultAnswer { self } }
 
     builder.step1().step2().step3()
 
@@ -30,7 +29,7 @@ class SuspendBuilderTest {
 
   @Test fun testSimpleBuilder2() = runTest {
     val builder = reflectiveMockk<TestBuilder> {
-      coAnswerEveryCallIn(suspendMemberFunctions) { mock }
+      coAnswerEveryCallIn(suspendMemberFunctions) { self }
     }
 
     builder.step1().step2().step3()
@@ -46,7 +45,7 @@ class SuspendBuilderTest {
     val builder = reflectiveMockk<TestBuilder> {
       suspendMemberFunctions
         .filterReturnType<TestBuilder>()
-        .forEach { coEveryCallTo(it) returns mock }
+        .forEach { coEveryCallTo(it) returns self }
     }
 
     builder.step1().step2().step3()

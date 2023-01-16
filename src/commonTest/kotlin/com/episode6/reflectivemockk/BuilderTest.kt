@@ -12,7 +12,7 @@ class BuilderTest {
   }
 
   @Test fun testSimpleBuilder() {
-    val builder = reflectiveMockk<TestBuilder> { defaultAnswer { mock } }
+    val builder = reflectiveMockk<TestBuilder> { defaultAnswer { self } }
 
     builder.step1().step2().step3()
 
@@ -25,7 +25,7 @@ class BuilderTest {
 
   @Test fun testSimpleBuilder2() {
     val builder = reflectiveMockk<TestBuilder> {
-      answerEveryCallIn(normalMemberFunctions) { mock }
+      answerEveryCallIn(normalMemberFunctions) { self }
     }
 
     builder.step1().step2().step3()
@@ -41,7 +41,7 @@ class BuilderTest {
     val builder = reflectiveMockk<TestBuilder> {
       normalMemberFunctions
         .filterReturnType<TestBuilder>()
-        .forEach { everyCallTo(it) returns mock }
+        .forEach { everyCallTo(it) returns self }
     }
 
     builder.step1().step2().step3()
