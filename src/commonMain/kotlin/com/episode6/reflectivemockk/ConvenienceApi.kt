@@ -22,7 +22,7 @@ public inline fun <reified T : Any> T.reflectiveStubs(stubbing: ReflectiveStubbi
 }
 
 /**
- * Convenience method to create a new mockL with reflective stubs.
+ * Convenience method to create a new mockK with reflective stubs.
  *
  * Sample Usage (to support a builder):
  *
