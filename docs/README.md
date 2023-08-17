@@ -1,6 +1,6 @@
 Get your default answers back!
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.episode6.reflectivemockk/reflective-mockk.svg?style=flat-square)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.episode6.reflectivemockk2%22)
+[![Maven Central](https://img.shields.io/maven-central/v/com.episode6.reflectivemockk/reflective-mockk.svg?style=flat-square)](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.episode6.reflectivemockk%22)
 
 ### Installation
 
