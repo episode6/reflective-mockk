@@ -2,7 +2,7 @@
 assertk = "0.25"
 gradle = "7.5.1"
 kotlin = "1.7.10"
-mockk = "1.13.3"
+mockk = "1.13.7"
 kotlinx-coroutines = "1.6.4"
 
 [libraries]
