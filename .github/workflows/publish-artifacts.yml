@@ -1,5 +1,6 @@
 name: Publish Artifacts
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -100,19 +101,19 @@ jobs:
         run: ./gradlew dokkaGenerateHtml
       - name: Prepare Site Docs
         run: ./gradlew configSite
-      - name: Deploy root docs to website
-        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: site
-          FOLDER: build/site
-          TARGET_FOLDER: /
-          CLEAN: false
-      - name: Deploy dokka to website
-        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: site
-          FOLDER: build/dokka/html
-          TARGET_FOLDER: /docs/${{ github.ref_name }}/
-          CLEAN: true
+#      - name: Deploy root docs to website
+#        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
+#        with:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BRANCH: site
+#          FOLDER: build/site
+#          TARGET_FOLDER: /
+#          CLEAN: false
+#      - name: Deploy dokka to website
+#        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
+#        with:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          BRANCH: site
+#          FOLDER: build/dokka/html
+#          TARGET_FOLDER: /docs/${{ github.ref_name }}/
+#          CLEAN: true
