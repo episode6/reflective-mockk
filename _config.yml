@@ -2,6 +2,6 @@
 theme: jekyll-theme-cayman
 title: reflective-mockk
 description: Stub mockks programmatically using kotlin-reflect.
-version: 1.1.1-SNAPSHOT
-docsDir: https://episode6.github.io/reflective-mockk/docs/main
+version: 1.1.0
+docsDir: https://episode6.github.io/reflective-mockk/docs/v1.1.0
 kotlinVersion: 2.3.21

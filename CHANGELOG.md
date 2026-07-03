@@ -1,7 +1,5 @@
 # ChangeLog
 
-### v1.1.1-SNAPSHOT - Unreleased
-
 ### v1.1.0 - Released 7/3/2026
 
 - Modernize build infrastructure: Kotlin `v2.3.21`, Gradle `v9.5.1`, Dokka `v2.2.0`
