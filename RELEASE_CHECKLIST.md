@@ -1,4 +1,4 @@
-## Redux StoreFlow Release Checklist
+## Reflective-MockK Release Checklist
 
 (we should be able to automate most of this eventually)
 

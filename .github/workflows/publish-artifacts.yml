@@ -1,0 +1,118 @@
+name: Publish Artifacts
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+env:
+  GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
+jobs:
+  publish:
+    runs-on: macos-latest
+    if: github.repository == 'episode6/reflective-mockk'
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up JDK 23
+        uses: actions/setup-java@v5
+        with:
+          java-version: '23'
+          distribution: 'zulu'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+      - name: Clean Project
+        run: ./gradlew clean
+      - name: Check and Publish to Maven Local
+        run: ./gradlew check publishToMavenLocal
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASS }}
+          ORG_GRADLE_PROJECT_nexusUsername: ${{ secrets.NEXUS_USERNAME }}
+          ORG_GRADLE_PROJECT_nexusPassword: ${{ secrets.NEXUS_PASSWORD }}
+
+      - name: Prepare Sonatype Bundle
+        run: |
+          mkdir -p bundle/com/episode6
+          cp -r ~/.m2/repository/com/episode6/reflectivemockk bundle/com/episode6/
+
+          # Drop Maven local-repo metadata; remote repos manage their own
+          # maven-metadata.xml and reject the -local variant (HTTP 400).
+          find bundle -name "maven-metadata*.xml" -delete
+
+          # Sign all artifacts
+          echo "${{ secrets.GPG_KEY }}" | gpg --batch --import
+          find bundle -type f ! -name "*.asc" ! -name "*.md5" ! -name "*.sha1" ! -name "*.sha256" ! -name "*.sha512" | while read -r file; do
+            gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASS }}" --detach-sign --armor "$file" || exit 1
+          done
+
+          # Generate checksums
+          find bundle -type f ! -name "*.md5" ! -name "*.sha1" ! -name "*.sha256" ! -name "*.sha512" | while read -r file; do
+            for alg in md5 sha1 sha256 sha512; do
+              if [ "$alg" == "md5" ]; then md5sum "$file" | cut -d ' ' -f 1 > "$file.md5"
+              elif [ "$alg" == "sha1" ]; then sha1sum "$file" | cut -d ' ' -f 1 > "$file.sha1"
+              elif [ "$alg" == "sha256" ]; then sha256sum "$file" | cut -d ' ' -f 1 > "$file.sha256"
+              elif [ "$alg" == "sha512" ]; then sha512sum "$file" | cut -d ' ' -f 1 > "$file.sha512"
+              fi
+            done
+          done
+
+      - name: Create Sonatype Bundle
+        run: |
+          cd bundle
+          zip -r ../sonatype-bundle.zip .
+      - name: Upload Bundle to GitHub
+        uses: actions/upload-artifact@v7
+        with:
+          name: sonatype-bundle
+          path: sonatype-bundle.zip
+          compression-level: 0
+
+      - name: Publish to Sonatype Central
+        env:
+          NEXUS_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+        run: |
+          set -e
+          if find bundle -type f | grep -q -- '-SNAPSHOT'; then
+            echo "Snapshot artifacts detected — uploading files individually"
+            cd bundle
+            AUTH_BASIC=$(printf "%s:%s" "$NEXUS_USERNAME" "$NEXUS_PASSWORD" | base64 | tr -d '\n')
+            find . -type f \( ! -name "*.asc" -a ! -name "*.md5" -a ! -name "*.sha1" -a ! -name "*.sha256" -a ! -name "*.sha512" \) -print | while read -r file; do
+              rel="${file#./}"
+              url="https://central.sonatype.com/repository/maven-snapshots/${rel}"
+              echo "Uploading $rel"
+              curl --silent --show-error --fail -X PUT \
+                -H "Authorization: Basic ${AUTH_BASIC}" \
+                -H "Content-Type: application/octet-stream" \
+                --data-binary @"$file" "$url" || { echo "Failed uploading $rel"; exit 1; }
+            done
+          else
+            mv sonatype-bundle.zip ${{ github.event.repository.name }}.zip
+            SONATYPE_TOKEN=$(printf "%s:%s" "$NEXUS_USERNAME" "$NEXUS_PASSWORD" | base64 | tr -d '\n')
+            curl --request POST \
+              --header "Authorization: Bearer ${SONATYPE_TOKEN}" \
+              --form bundle=@${{ github.event.repository.name }}.zip \
+              'https://central.sonatype.com/api/v1/publisher/upload'
+          fi
+
+      - name: Generate API Docs
+        run: ./gradlew dokkaGenerateHtml
+      - name: Prepare Site Docs
+        run: ./gradlew configSite
+      - name: Deploy root docs to website
+        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: site
+          FOLDER: build/site
+          TARGET_FOLDER: /
+          CLEAN: false
+      - name: Deploy dokka to website
+        uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: site
+          FOLDER: build/dokka/html
+          TARGET_FOLDER: /docs/${{ github.ref_name }}/
+          CLEAN: true
