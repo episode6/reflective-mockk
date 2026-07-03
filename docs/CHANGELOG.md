@@ -8,6 +8,8 @@
 - Publish artifacts to Sonatype Central (replaces legacy OSSRH)
 - Consolidate publish workflows and update GitHub Actions
 - Add agent skills (`.agents/`, registered under `.claude/skills/`) and docs-verification CI
+- Add release tooling (`scripts/ship-release.py`, `RELEASE_CHECKLIST.md`) that reads the version name from `self.versions.toml` (still the source of truth)
+- Ignore generated `gradle/gradle-daemon-jvm.properties` and `.kotlin/`
 
 ### v1.0.0 - Released 8/16/2023
 
