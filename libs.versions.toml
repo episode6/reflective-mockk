@@ -1,17 +1,26 @@
 [versions]
-assertk = "0.25"
-gradle = "7.5.1"
-kotlin = "1.7.10"
-mockk = "1.13.7"
-kotlinx-coroutines = "1.6.4"
+gradle-core = "9.5.1"
+kotlin-core = "2.3.21"
+dokka-core = "2.2.0"
+kotlinx-coroutines = "1.11.0"
+
+# test utils
+junit5-core = "5.9.1"
+junit5-platform = "1.9.1"
+assertk-core = "0.28.1"
+mockk-core = "1.14.11"
 
 [libraries]
-assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
-junit5 = "org.junit.jupiter:junit-jupiter:5.9.1"
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-core" }
+mockk-core = { module = "io.mockk:mockk", version.ref = "mockk-core" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
-[plugins]
-dokka = "org.jetbrains.dokka:1.7.10"
-kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+# test utils
+junit5-core = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit5-core" }
+junit5-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit5-platform" }
+assertk-core = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk-core" }
+assertk-jvm = { module = "com.willowtreeapps.assertk:assertk-jvm", version.ref = "assertk-core" }
 
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-core" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka-core" }

@@ -4,46 +4,13 @@ import org.gradle.api.publish.maven.MavenPom
 
 class Config {
   class Jvm {
-    static String name = "1.8"
-    static JavaVersion targetCompat = JavaVersion.VERSION_1_8
-    static JavaVersion sourceCompat = JavaVersion.VERSION_1_8
-  }
-
-  class Android {
-    static int compileSdk = 33
-    static int targetSdk = 33
-    static int minSdk = 22
+    static String name = "17"
+    static JavaVersion targetCompat = JavaVersion.VERSION_17
+    static JavaVersion sourceCompat = JavaVersion.VERSION_17
   }
 
   class Kotlin {
     static String compilerArgs = "-opt-in=kotlin.RequiresOptIn"
-  }
-
-  public class KMPTargets {
-    static String[] linux = [
-        "linuxX64",
-    ]
-    static String[] apple = [
-        "iosArm32",
-        "iosArm64",
-        "iosX64",
-        "iosSimulatorArm64",
-        "macosX64",
-        "macosArm64",
-        "tvosArm64",
-        "tvosX64",
-        "tvosSimulatorArm64",
-        "watchosArm32",
-        "watchosArm64",
-        "watchosX86",
-        "watchosX64",
-        "watchosSimulatorArm64",
-    ]
-    static String[] windows = [
-        "mingwX64",
-    ]
-    public static String[] natives = linux + apple + windows
-    public static String[] all = natives + ["jvm", "js"]
   }
 
   class Site {
@@ -54,7 +21,7 @@ class Config {
         description: ${project.rootProject.description}
         version: ${project.version}
         docsDir: https://episode6.github.io/reflective-mockk/docs/${if (Maven.isReleaseBuild(project)) "v${project.version}" else "main"}
-        kotlinVersion: ${project.libs.versions.kotlin.get()}
+        kotlinVersion: ${project.libs.versions.kotlin.core.get()}
 """.stripIndent()
     }
   }
@@ -64,7 +31,7 @@ class Config {
 
     static void applyPomConfig(Project project, MavenPom pom) {
       pom.with {
-        name = project.project.name
+        name = project.name
         url = "https://github.com/${projectGHUrl}"
         licenses {
           license {
@@ -80,9 +47,9 @@ class Config {
           }
         }
         scm {
-          url = "extensible"
-          connection = "scm:https://github.com/${projectGHUrl}.git"
-          developerConnection = "scm:https://github.com/${projectGHUrl}.git"
+          url = "https://github.com/${projectGHUrl}"
+          connection = "scm:git:https://github.com/${projectGHUrl}.git"
+          developerConnection = "scm:git:ssh://github.com/${projectGHUrl}.git"
         }
       }
       project.afterEvaluate {
@@ -90,15 +57,15 @@ class Config {
       }
     }
 
-    public static boolean isReleaseBuild(Project project) {
+    static boolean isReleaseBuild(Project project) {
       return project.version.contains("SNAPSHOT") == false
     }
 
     static String getRepoUrl(Project project) {
       if (isReleaseBuild(project)) {
-        return "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        return "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
       } else {
-        return "https://oss.sonatype.org/content/repositories/snapshots/"
+        return "https://central.sonatype.com/repository/maven-snapshots/"
       }
     }
   }

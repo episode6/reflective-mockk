@@ -4,17 +4,17 @@ plugins {
 
 gradlePlugin {
   plugins {
-    create("ConfigSite") {
+    create("ConfigureSitePlugin") {
       id = "config-site"
-      implementationClass = "plugins.ConfigSite"
+      implementationClass = "plugins.ConfigSitePlugin"
     }
-    create("ConfigKmp") {
-      id = "config-kmp"
-      implementationClass = "plugins.ConfigKmp"
+    create("ConfigureMultiPlugin") {
+      id = "config-multi"
+      implementationClass = "plugins.ConfigMultiPlugin"
     }
-    create("ConfigKmpAllDeployable") {
-      id = "config-kmp-deploy"
-      implementationClass = "plugins.ConfigKmpDeployable"
+    create("ConfigureMultiDeployable") {
+      id = "config-multi-deploy"
+      implementationClass = "plugins.ConfigMultiDeployablePlugin"
     }
   }
 }

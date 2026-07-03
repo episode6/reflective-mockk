@@ -6,29 +6,25 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
 import org.gradle.plugins.signing.Sign
 
-class ConfigKmpDeployable implements Plugin<Project> {
+class ConfigMultiDeployablePlugin implements Plugin<Project> {
   @Override
   void apply(Project target) {
     target.with {
       plugins.with {
-        apply(ConfigKmp)
-        apply(CommonDeployable)
+        apply(ConfigMultiPlugin)
+        apply(CommonDeployablePlugin)
       }
 
       // mitigate gradle warnings by ensuring all pub tasks depend on all sign tasks
       def signTasks = tasks.withType(Sign)
-      tasks.withType(AbstractPublishToMaven).forEach { pubTask ->
-        signTasks.forEach {
-          pubTask.dependsOn(it)
-        }
+      tasks.withType(AbstractPublishToMaven).configureEach { pubTask ->
+        pubTask.dependsOn(signTasks)
       }
 
-      afterEvaluate { project ->
-        publishing {
-          publications.withType(MavenPublication) {
-            Config.Maven.applyPomConfig(project, pom)
-            artifact javadocJar
-          }
+      publishing {
+        publications.withType(MavenPublication).configureEach { pub ->
+          Config.Maven.applyPomConfig(target, pub.pom)
+          pub.artifact tasks.named("javadocJar")
         }
       }
     }
