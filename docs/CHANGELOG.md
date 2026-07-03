@@ -1,6 +1,6 @@
 # ChangeLog
 
-### v1.0.1-SNAPSHOT - Unreleased
+### v1.1.0-SNAPSHOT - Unreleased
 
 - Modernize build infrastructure: Kotlin `v2.3.21`, Gradle `v9.5.1`, Dokka `v2.2.0`
 - Bump JVM target to 17
