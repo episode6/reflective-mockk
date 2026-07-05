@@ -5,12 +5,14 @@ on:
       - main
     tags:
       - 'v*'
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
 env:
   GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.daemon=false -Dkotlin.incremental=false"
 jobs:
   publish:
     runs-on: macos-latest
-    if: github.repository == 'episode6/reflective-mockk'
+    if: github.repository == 'episode6/reflective-mockk' && (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'publish-snapshot'))
     steps:
       - uses: actions/checkout@v6
       - name: Set up JDK 23
@@ -74,6 +76,11 @@ jobs:
           NEXUS_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run: |
           set -e
+          # PR-triggered runs (via the publish-snapshot label) may only publish snapshots
+          if [ "${{ github.event_name }}" == "pull_request" ] && ! find bundle -type f | grep -q -- '-SNAPSHOT'; then
+            echo "Refusing to publish a non-snapshot version from a pull request"
+            exit 1
+          fi
           if find bundle -type f | grep -q -- '-SNAPSHOT'; then
             echo "Snapshot artifacts detected — uploading files individually"
             cd bundle
@@ -97,10 +104,13 @@ jobs:
           fi
 
       - name: Generate API Docs
+        if: github.event_name != 'pull_request'
         run: ./gradlew dokkaGenerateHtml
       - name: Prepare Site Docs
+        if: github.event_name != 'pull_request'
         run: ./gradlew configSite
       - name: Deploy root docs to website
+        if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -109,6 +119,7 @@ jobs:
           TARGET_FOLDER: /
           CLEAN: false
       - name: Deploy dokka to website
+        if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@132898c54c57c7cc6b80eb3a89968de8fc283505
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
