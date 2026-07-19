@@ -2,6 +2,13 @@
 
 ### v1.1.1-SNAPSHOT - Unreleased
 
+- CI: snapshot publishes now use Maven's timestamped unique-snapshot protocol (new
+  `scripts/upload-snapshots.py`, ported from tacita — uploads timestamped filenames and
+  re-PUTs each module's `maven-metadata.xml` with an incremented buildNumber). The
+  previous plain PUTs of non-unique snapshot filenames only registered on a version's
+  first publish; sonatype central accepted but never served later republishes, so a
+  republished `-SNAPSHOT` version kept serving its first build's bytes
+
 ### v1.1.0 - Released 7/3/2026
 
 - Modernize build infrastructure: Kotlin `v2.3.21`, Gradle `v9.5.1`, Dokka `v2.2.0`
