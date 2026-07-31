@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- reflective-mockk: a K facing its own mirror image across a reflection line
+       (kotlin-reflect + MockK). Accent is episode6 orange (#FF6600, from the org favicon). -->
+  <rect x="2" y="2" width="124" height="124" rx="26" fill="#262320" stroke="#4a443c" stroke-width="2"/>
+  <line x1="64" y1="26" x2="64" y2="102" stroke="#EDE9E1" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 14"/>
+  <g stroke="#FF6600" stroke-width="13" stroke-linecap="round" fill="none">
+    <path d="M80 34 V94 M80 64 L104 38 M80 64 L104 90"/>
+  </g>
+  <g stroke="#FF6600" stroke-width="13" stroke-linecap="round" fill="none" opacity="0.45">
+    <path d="M48 34 V94 M48 64 L24 38 M48 64 L24 90"/>
+  </g>
+</svg>
