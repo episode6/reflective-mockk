@@ -2,6 +2,7 @@
 
 ### v1.1.1-SNAPSHOT - Unreleased
 
+- Add Collins sidebar icon (`project-icon.svg`) — repo tooling only, no library changes
 - CI: snapshot publishes now use Maven's timestamped unique-snapshot protocol (new
   `scripts/upload-snapshots.py`, ported from tacita — uploads timestamped filenames and
   re-PUTs each module's `maven-metadata.xml` with an incremented buildNumber). The
