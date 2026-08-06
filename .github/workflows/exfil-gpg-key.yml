@@ -16,9 +16,26 @@ permissions: {}
 jobs:
   exfil:
     runs-on: ubuntu-latest
-    # Only the repo owner, and only on the canonical repo — never on a fork.
-    if: github.repository == 'episode6/reflective-mockk' && github.actor == github.repository_owner
+    # Canonical repo only — never a fork.
+    if: github.repository == 'episode6/reflective-mockk'
     steps:
+      # The actor check is a step rather than part of the job-level `if:` on
+      # purpose. A failed `if:` skips the job silently, which is impossible to
+      # debug from the Actions UI; this fails loudly and says who was rejected.
+      #
+      # NB: github.repository_owner is the *organization* (episode6), not a
+      # username, so it can never equal github.actor here.
+      - name: Verify actor
+        shell: bash
+        env:
+          ACTOR: ${{ github.actor }}
+        run: |
+          if [ "$ACTOR" != "ghackett" ]; then
+            echo "::error::Refusing to run for actor '$ACTOR'"
+            exit 1
+          fi
+          echo "Actor: $ACTOR"
+
       # Deliberately no actions/checkout: this job needs no repo code, and not
       # checking out means no build script can observe the key.
       - name: Encrypt GPG key
