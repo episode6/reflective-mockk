@@ -28,10 +28,6 @@ gh run watch --repo episode6/reflective-mockk
 Note the `Plaintext SHA-256` printed in the job log — you'll use it to verify
 the file you decrypt.
 
-If the job shows as **skipped**, the job-level `if:` didn't match: the workflow
-only runs on `episode6/reflective-mockk` itself, never a fork. The actor check
-is a step instead, so a wrong user fails visibly rather than skipping.
-
 ## Downloading
 
 ```bash
