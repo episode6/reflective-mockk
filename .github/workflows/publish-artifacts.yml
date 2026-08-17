@@ -49,7 +49,7 @@ jobs:
             exit 1
           }
           find bundle -type f ! -name "*.asc" ! -name "*.md5" ! -name "*.sha1" ! -name "*.sha256" ! -name "*.sha512" | while read -r file; do
-            gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASS }}" --local-user '3EBBA2410EE1077E!' --detach-sign --armor "$file" || exit 1
+            gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASS }}" --local-user '3EBBA2410EE1077E!' --digest-algo SHA512 --detach-sign --armor "$file" || exit 1
           done
 
           # Generate checksums
