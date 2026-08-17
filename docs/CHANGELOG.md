@@ -1,6 +1,8 @@
 # ChangeLog
 
-### v1.1.1-SNAPSHOT - Unreleased
+### v1.1.2-SNAPSHOT - Unreleased
+
+### v1.1.1 - Released 8/16/2026
 
 - Release artifacts are now signed with a dedicated RSA 4096 signing subkey
   (`3EBBA2410EE1077E`) at SHA-512, instead of the release key's 2048-bit primary. The key
